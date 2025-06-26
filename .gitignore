@@ -1,2 +1,9 @@
 .vscode/
 .DS_Store
+obj/
+bin/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.vscode

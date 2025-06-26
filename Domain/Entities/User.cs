@@ -1,4 +1,4 @@
-namespace Api.Data;
+namespace Domain.Entities;
 
 public class User
 {

@@ -7,35 +7,40 @@ docker-compose down --volumes
 docker-compose up --build
 ```
 
-## Następnie otwórz przeglądarkę i przejdź do `http://localhost:5001/swagger/index.html`, aby zobaczyć dokumentację API.
+!Jeżeli up nie zadziała, spróbuj:
+
+```bash
+dotnet build
+```
+
+Następnie otwórz przeglądarkę i przejdź do `http://localhost:5001/swagger/index.html`, aby zobaczyć dokumentację API.
 
 
 # Połączenie frontendu z backendem
+
 Aby połączyć frontend z backendem, upewnij się, że w pliku konfiguracyjnym frontendu (np. `src/config.js` lub `src/constants.js`) masz ustawiony adres URL API:
 
 ```javascript
 export const API_URL = 'http://localhost:5001/api';
 ```
 
+# Dodawanie DTO
+
+Jeżeli chcesz dodać tabelę do bazy danych, to przejdź do kolejnego punktu `Migracje`, gdzie opisane jest, jak dodać nowy model i migrację.
+
+DTO (Data Transfer Object) mają służyć do przesyłania danych między warstwami aplikacji, np. między kontrolerami a usługami. DTO powinny być proste i zawierać tylko te pola, które są niezbędne do komunikacji.
+DTO powinny znajdować się w katalogu `Api/DTOs`.
+
 
 # Migracje
 
-Migracje bazy danych są automatycznie tworzone i stosowane podczas uruchamiania aplikacji. Jeśli chcesz ręcznie utworzyć migrację, możesz użyć następującego polecenia:
-
-```bash
-dotnet ef migrations add <NazwaMigracji>
-```
-
-Aby zastosować migracje, użyj:
-
-```bash
-dotnet ef database update
-```
-
 ## Dodawanie modelu do aplikacji/tabeli do bazy danych
+
+UWAGA: Modele przechowujemy w Domain/Entities!!! Enumy i interfejsy również w Domain
+
 Aby dodać nowy model do aplikacji i utworzyć odpowiadającą mu tabelę w bazie danych, wykonaj następujące kroki:
 
-1. **Dodaj nowy model**: Utwórz nową klasę w katalogu `Api/Data`, która będzie reprezentować tabelę w bazie danych. Na przykład:
+1. **Dodaj nowy model**: Utwórz nową klasę w katalogu `Domain/Entities`, która będzie reprezentować tabelę w bazie danych. Na przykład:
 
 ```csharp
 public class NowyModel
@@ -45,7 +50,7 @@ public class NowyModel
 }
 ```
 
-2. **Zaktualizuj kontekst bazy danych**: Dodaj nowy model do klasy `AppDbContext` w katalogu `Api/Data/AppDbContext.cs`:
+2. **Zaktualizuj kontekst bazy danych**: Dodaj nowy model do klasy `AppDbContext` w katalogu `Infrastructure/Data/AppDbContext.cs`:
 
 ```csharp
 public DbSet<NowyModel> NoweModele { get; set; }
@@ -53,7 +58,7 @@ public DbSet<NowyModel> NoweModele { get; set; }
 
 3. **Utwórz migrację**: W terminalu, w katalogu głównym projektu, uruchom polecenie:
 ```bash
-dotnet ef migrations add DodajNowyModel
+dotnet ef migrations add TestoweWywolanie --project Infrastructure --startup-project Ap
 ```
 
 4. **Zastosuj migrację**: Środowisko działa na Dockerze, więc po prostu przeładuj kontener, a migracje zostaną automatycznie zastosowane.
@@ -69,3 +74,33 @@ dotnet ef migrations add DodajNowyModel
 | Podgląd SQL migracji         | `dotnet ef migrations script`            |
 | Sprawdzenie statusu migracji | `dotnet ef database update --verbose`    |
 | Lista dostępnych migracji    | `dotnet ef migrations list`              |
+
+# Tworzenie projektu przez CLI
+
+Utwórz projekt
+
+```bash
+dotnet new classlib -n Infrastructure -o Infrastructure
+```
+
+Dodaj projekt do solucji
+
+```bash
+dotnet sln inzynieria_oprogramowania.sln add Infrastructure/Infrastructure.csproj
+```
+
+Dodaj referencję do projektu API
+
+```bash
+dotnet add Api/Api.csproj reference Infrastructure/Infrastructure.csproj
+```
+
+# Dodawanie pakietów NuGet
+
+Entity Framework Core i SQL Server
+
+```bash
+dotnet add Infrastructure/Infrastructure.csproj package Microsoft.EntityFrameworkCore
+dotnet add Infrastructure/Infrastructure.csproj package Microsoft.EntityFrameworkCore.SqlServer
+dotnet add Infrastructure/Infrastructure.csproj package Microsoft.EntityFrameworkCore.Design
+```
