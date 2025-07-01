@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Api.Migrations
+namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250701201920_Meetings")]
-    partial class Meetings
+    [Migration("20250701222450_FixCascadePaths")]
+    partial class FixCascadePaths
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -78,9 +78,10 @@ namespace Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MeetingId");
-
                     b.HasIndex("UserId");
+
+                    b.HasIndex("MeetingId", "UserId")
+                        .IsUnique();
 
                     b.ToTable("MeetingAttendees");
                 });
@@ -128,7 +129,7 @@ namespace Api.Migrations
                     b.HasOne("Domain.Entities.User", "User")
                         .WithMany("MeetingsAttended")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Meeting");

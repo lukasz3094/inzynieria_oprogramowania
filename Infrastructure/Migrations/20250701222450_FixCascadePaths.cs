@@ -3,23 +3,27 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Api.Migrations
+namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Meetings : Migration
+    public partial class FixCascadePaths : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Tests");
-
-            migrationBuilder.AddColumn<string>(
-                name: "FullName",
-                table: "Users",
-                type: "nvarchar(max)",
-                nullable: false,
-                defaultValue: "");
+            migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
+                });
 
             migrationBuilder.CreateTable(
                 name: "Meetings",
@@ -69,13 +73,14 @@ namespace Api.Migrations
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_MeetingAttendees_MeetingId",
+                name: "IX_MeetingAttendees_MeetingId_UserId",
                 table: "MeetingAttendees",
-                column: "MeetingId");
+                columns: new[] { "MeetingId", "UserId" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_MeetingAttendees_UserId",
@@ -97,22 +102,8 @@ namespace Api.Migrations
             migrationBuilder.DropTable(
                 name: "Meetings");
 
-            migrationBuilder.DropColumn(
-                name: "FullName",
-                table: "Users");
-
-            migrationBuilder.CreateTable(
-                name: "Tests",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TestKolumna = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Tests", x => x.Id);
-                });
+            migrationBuilder.DropTable(
+                name: "Users");
         }
     }
 }

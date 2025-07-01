@@ -65,6 +65,7 @@ public DbSet<NowyModel> NoweModele { get; set; }
 3. **Utwórz migrację**: W terminalu, w katalogu głównym projektu, uruchom polecenie:
 ```bash
 dotnet ef migrations add TestoweWywolanie --project Infrastructure --startup-project Api
+dotnet ef database update --project Infrastructure --startup-project Api
 ```
 
 4. **Zastosuj migrację**: Środowisko działa na Dockerze, więc po prostu przeładuj kontener, a migracje zostaną automatycznie zastosowane.
