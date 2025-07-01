@@ -3,43 +3,60 @@ using Microsoft.EntityFrameworkCore;
 using Infrastructure.Data;
 using Domain.Interfaces;
 
-var builder = WebApplication.CreateBuilder(args);
+namespace Api;
 
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IMeetingRepository, MeetingRepository>();
-
-builder.Services.AddControllers();
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-var app = builder.Build();
-
-app.UseSwagger();
-app.UseSwaggerUI();
-
-app.UseHttpsRedirection();
-
-int retries = 10;
-while (retries > 0)
+public class Program
 {
-    try
+    public static void Main(string[] args)
     {
-        using var scope = app.Services.CreateScope();
-        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        db.Database.Migrate();
-        break;
-    }
-    catch (Exception ex)
-    {
-        retries--;
-        Console.WriteLine($"Api retries left: {retries}");
-        Console.WriteLine(ex.Message);
-        Thread.Sleep(5000);
+        var builder = WebApplication.CreateBuilder(args);
+
+        builder.Services.AddScoped<IUserRepository, UserRepository>();
+        builder.Services.AddScoped<IMeetingRepository, MeetingRepository>();
+
+        builder.Services.AddControllers();
+
+        if (builder.Environment.IsEnvironment("Test")) { }
+        else
+        {
+            builder.Services.AddDbContext<AppDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+        }
+
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen();
+
+        var app = builder.Build();
+
+        app.UseSwagger();
+        app.UseSwaggerUI();
+
+        app.UseHttpsRedirection();
+
+		if (!app.Environment.IsEnvironment("Test"))
+        {
+            int retries = 10;
+            while (retries > 0)
+            {
+                try
+                {
+                    using var scope = app.Services.CreateScope();
+                    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                    db.Database.Migrate();
+                    Console.WriteLine("Database migration successful.");
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    retries--;
+                    Console.WriteLine($"Api retries left: {retries}");
+                    Console.WriteLine(ex.Message);
+                    Thread.Sleep(5000);
+                }
+            }
+        }
+
+        app.MapControllers();
+        app.Run();
     }
 }
-
-app.MapControllers();
-app.Run();

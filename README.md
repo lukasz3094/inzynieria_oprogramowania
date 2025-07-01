@@ -15,6 +15,12 @@ dotnet build
 
 Następnie otwórz przeglądarkę i przejdź do `http://localhost:5001/swagger/index.html`, aby zobaczyć dokumentację API.
 
+# Uruchomienie testów
+
+```bash
+dotnet build
+./test.sh
+```
 
 # Połączenie frontendu z backendem
 

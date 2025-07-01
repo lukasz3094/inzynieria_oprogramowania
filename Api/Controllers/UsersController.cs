@@ -1,3 +1,4 @@
+using Api.DTOs.Api;
 using Domain.Entities;
 using Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -14,22 +15,42 @@ public class UsersController(IUserRepository userRepository) : ControllerBase
     public async Task<IActionResult> GetAll()
     {
         var users = await _userRepository.GetAllAsync();
-        return Ok(users);
+		var result = users.Select(u => new UserDetailsDto
+        {
+            Id = u.Id,
+            Email = u.Email,
+            FullName = u.FullName
+        });
+
+        return Ok(result);
     }
 
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(int id)
-    {
-        var user = await _userRepository.GetByIdAsync(id);
-        if (user == null) return NotFound();
-        return Ok(user);
+	[HttpGet("{id}")]
+	public async Task<IActionResult> GetById(int id)
+	{
+		var user = await _userRepository.GetByIdAsync(id);
+		if (user == null) return NotFound();
+        
+		return Ok(new UserDetailsDto
+        {
+            Id = user.Id,
+            Email = user.Email,
+            FullName = user.FullName
+        });
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(User user)
+    public async Task<IActionResult> Create([FromBody] UserCreateDto dto)
     {
+        var user = new User
+        {
+            Email = dto.Email,
+            FullName = dto.FullName
+        };
+
         await _userRepository.AddAsync(user);
         await _userRepository.SaveChangesAsync();
+
         return CreatedAtAction(nameof(GetById), new { id = user.Id }, user);
     }
 
