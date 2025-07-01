@@ -1,8 +1,12 @@
 using Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Infrastructure.Data;
+using Domain.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IMeetingRepository, MeetingRepository>();
 
 builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>(options =>
