@@ -10,6 +10,7 @@ public class AppDbContext : DbContext
     {
     }
 
+    public DbSet<Meeting> Meetings => Set<Meeting>();
     public DbSet<User> Users => Set<User>();
-    public DbSet<Test> Tests => Set<Test>();
+    public DbSet<MeetingAttendee> MeetingAttendees => Set<MeetingAttendee>();
 }
