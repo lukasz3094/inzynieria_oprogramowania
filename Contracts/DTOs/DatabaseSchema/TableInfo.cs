@@ -1,4 +1,4 @@
-namespace Api.DTOs.DatabaseSchema;
+namespace Contracts.DTOs.DatabaseSchema;
 
 public class TableInfo
 {

@@ -1,7 +1,7 @@
 using Domain.Entities;
 using Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Api.DTOs.Api;
+using Contracts.DTOs.Api;
 using Patterns.Facade;
 
 namespace Api.Controllers;

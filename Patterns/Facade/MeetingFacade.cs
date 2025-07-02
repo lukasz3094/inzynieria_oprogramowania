@@ -1,6 +1,6 @@
 namespace Patterns.Facade;
 
-using Api.DTOs.Api;
+using Contracts.DTOs.Api;
 using Domain.Entities;
 using Domain.Interfaces;
 using System.Threading.Tasks;

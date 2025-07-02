@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Domain.Entities;
 using System.Net.Http.Json;
-using Api.DTOs.Api;
+using Contracts.DTOs.Api;
 
 namespace ApiTests;
 

@@ -1,4 +1,4 @@
-namespace Api.DTOs.Api;
+namespace Contracts.DTOs.Api;
 
 public class UserDetailsDto
 {

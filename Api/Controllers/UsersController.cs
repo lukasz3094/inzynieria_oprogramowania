@@ -1,4 +1,4 @@
-using Api.DTOs.Api;
+using Contracts.DTOs.Api;
 using Domain.Entities;
 using Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;

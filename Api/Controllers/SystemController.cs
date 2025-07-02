@@ -1,4 +1,4 @@
-using Api.DTOs.DatabaseSchema;
+using Contracts.DTOs.DatabaseSchema;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;

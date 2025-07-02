@@ -1,11 +1,9 @@
-namespace Patterns.Facade
-{
-	using Api.DTOs.Api;
-	using Domain.Entities;
-    using System.Threading.Tasks;
+namespace Patterns.Facade;
 
-    public interface IMeetingFacade
-    {
-        Task<bool> PlanMeetingAsync(int userId, MeetingCreateDto meetingDto);
-    }
+using Contracts.DTOs.Api;
+using System.Threading.Tasks;
+
+public interface IMeetingFacade
+{
+	Task<bool> PlanMeetingAsync(int userId, MeetingCreateDto meetingDto);
 }
