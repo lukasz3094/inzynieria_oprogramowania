@@ -2,7 +2,7 @@ using FluentAssertions;
 using Patterns.State;
 using Xunit;
 
-namespace UnitTests.State;
+namespace UnitTest.State;
 
 public class MeetingStateTests
 {

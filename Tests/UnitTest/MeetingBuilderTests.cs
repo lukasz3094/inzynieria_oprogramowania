@@ -4,7 +4,7 @@ using FluentAssertions;
 using Patterns.Builder;
 using Xunit;
 
-namespace UnitTests;
+namespace UnitTest;
 
 public class MeetingBuilderTests
 {
