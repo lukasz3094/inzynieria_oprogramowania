@@ -2,6 +2,7 @@ using Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Infrastructure.Data;
 using Domain.Interfaces;
+using Patterns.Facade;
 
 namespace Api;
 
@@ -13,6 +14,8 @@ public class Program
 
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<IMeetingRepository, MeetingRepository>();
+		builder.Services.AddScoped<ICalendarRepository, CalendarRepository>();
+		builder.Services.AddScoped<IMeetingFacade, MeetingFacade>();
 
         builder.Services.AddControllers();
 

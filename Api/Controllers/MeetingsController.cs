@@ -2,23 +2,20 @@ using Domain.Entities;
 using Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Api.DTOs.Api;
+using Patterns.Facade;
 
 namespace Api.Controllers;
 
 [ApiController]
 [Route("api/meetings")]
-public class MeetingsController : ControllerBase
+public class MeetingsController(IMeetingRepository meetingRepository, IUserRepository userRepository, ICalendarRepository calendarRepository) : ControllerBase
 {
-    private readonly IMeetingRepository _meetingRepository;
-    private readonly IUserRepository _userRepository;
+    private readonly IMeetingRepository _meetingRepository = meetingRepository;
+    private readonly IUserRepository _userRepository = userRepository;
+	private readonly ICalendarRepository _calendarRepository = calendarRepository;
+	private readonly IMeetingFacade _meetingFacade = new MeetingFacade(userRepository, calendarRepository, meetingRepository);
 
-    public MeetingsController(IMeetingRepository meetingRepository, IUserRepository userRepository)
-    {
-        _meetingRepository = meetingRepository;
-        _userRepository = userRepository;
-    }
-
-    [HttpGet]
+	[HttpGet]
     public async Task<IActionResult> GetAll()
     {
         var meetings = await _meetingRepository.GetAllAsync();
@@ -131,6 +128,13 @@ public class MeetingsController : ControllerBase
 		};
 
         return CreatedAtAction(nameof(GetById), new { id = meeting.Id }, result);
+    }
+
+	[HttpPost("plan")]
+    public async Task<IActionResult> Plan([FromBody] MeetingCreateDto dto, [FromQuery] int userId)
+    {
+        var result = await _meetingFacade.PlanMeetingAsync(userId, dto);
+        return result ? Ok("Meeting planned.") : BadRequest("Could not plan meeting.");
     }
 
 	[HttpPost("{meetingId}/attendees")]

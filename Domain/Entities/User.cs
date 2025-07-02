@@ -7,8 +7,8 @@ public class User
     public string FullName { get; set; } = string.Empty;
 
     // Meeting created by the user
-    public ICollection<Meeting> OrganizedMeetings { get; set; } = new List<Meeting>();
+    public ICollection<Meeting> OrganizedMeetings { get; set; } = [];
 
     // Meetings the user has attended
-    public ICollection<MeetingAttendee> MeetingsAttended { get; set; } = new List<MeetingAttendee>();
+    public ICollection<MeetingAttendee> MeetingsAttended { get; set; } = [];
 }
