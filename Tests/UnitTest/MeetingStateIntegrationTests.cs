@@ -20,6 +20,7 @@ public class MeetingStateIntegrationTests
 			SetState(meeting.Status switch
 			{
 				MeetingStatus.Scheduled => new CreatedState(),
+				MeetingStatus.Edited => new EditedState(),
 				MeetingStatus.InProgress => new InProgressState(),
 				MeetingStatus.Completed => new FinishedState(),
 				MeetingStatus.Cancelled => new CancelledState(),
@@ -32,7 +33,7 @@ public class MeetingStateIntegrationTests
 			_meeting.Status = State.Name switch
 			{
 				"Created" => MeetingStatus.Scheduled,
-				"Edited" => MeetingStatus.Scheduled,
+				"Edited" => MeetingStatus.Edited,
 				"InProgress" => MeetingStatus.InProgress,
 				"Finished" => MeetingStatus.Completed,
 				"Cancelled" => MeetingStatus.Cancelled,
@@ -50,7 +51,7 @@ public class MeetingStateIntegrationTests
 
         stateContext.Edit();
         stateContext.SyncStateToMeeting();
-        meeting.Status.Should().Be(MeetingStatus.Scheduled);
+        meeting.Status.Should().Be(MeetingStatus.Edited);
 
         stateContext.SaveEdit();
         stateContext.SyncStateToMeeting();
