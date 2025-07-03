@@ -3,6 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Infrastructure.Data;
 using Domain.Interfaces;
 using Patterns.Facade;
+using Contracts.Singleton;
+using Patterns.Singleton;
+using Patterns.Adapter;
 
 namespace Api;
 
@@ -16,6 +19,9 @@ public class Program
         builder.Services.AddScoped<IMeetingRepository, MeetingRepository>();
 		builder.Services.AddScoped<ICalendarRepository, CalendarRepository>();
 		builder.Services.AddScoped<IMeetingFacade, MeetingFacade>();
+		builder.Services.AddScoped<IOutlookConfigManager, OutlookConfigManager>();
+		builder.Services.AddScoped<IOutlookAdapter, OutlookAdapter>();
+		builder.Services.AddHttpClient();
 
         builder.Services.AddControllers();
 
