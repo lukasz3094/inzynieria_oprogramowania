@@ -6,6 +6,7 @@ using Patterns.Facade;
 using Contracts.Singleton;
 using Patterns.Singleton;
 using Patterns.Adapter;
+using Patterns.Strategy;
 
 namespace Api;
 
@@ -21,6 +22,10 @@ public class Program
 		builder.Services.AddScoped<IMeetingFacade, MeetingFacade>();
 		builder.Services.AddScoped<IOutlookConfigManager, OutlookConfigManager>();
 		builder.Services.AddScoped<IOutlookAdapter, OutlookAdapter>();
+		builder.Services.AddScoped<IMeetingSchedulingStrategy, StandardSlotStrategy>();
+		builder.Services.AddScoped<StandardSlotStrategy>();
+		builder.Services.AddScoped<ClosestAvailableStrategy>();
+		builder.Services.AddScoped<ISchedulingStrategyFactory, SchedulingStrategyFactory>();
 		builder.Services.AddHttpClient();
 
         builder.Services.AddControllers();

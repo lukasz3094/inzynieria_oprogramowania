@@ -2,43 +2,45 @@ namespace Patterns.Facade;
 
 using Contracts.DTOs.Api;
 using Domain.Entities;
+using Domain.Enums;
 using Domain.Interfaces;
+using Patterns.Strategy;
 using System.Threading.Tasks;
 
 public class MeetingFacade(
 	// IAuthService authService,
 	IUserRepository userService,
-	ICalendarRepository calendarService,
+	ISchedulingStrategyFactory strategyFactory,
 	IMeetingRepository meetingService) : IMeetingFacade
 {
 	// private readonly IAuthService _authService = authService;
 	private readonly IUserRepository _userService = userService;
-	private readonly ICalendarRepository _calendarService = calendarService;
+	private readonly ISchedulingStrategyFactory _strategyFactory = strategyFactory;	
 	private readonly IMeetingRepository _meetingService = meetingService;
 
-	public async Task<bool> PlanMeetingAsync(int userId, MeetingCreateDto meetingDto)
-	{
-		// var userId = _authService.GetUserIdFromToken(token);
-		// if (userId == null) return false;
+	public async Task<bool> PlanMeetingAsync(int userId, MeetingCreateDto dto, SchedulingStrategyType strategyType = SchedulingStrategyType.Standard)
+    {
+        var strategy = _strategyFactory.Get(strategyType);
 
-		var user = await _userService.GetByIdAsync(userId);
-		if (user == null) return false;
+        var user = await _userService.GetByIdAsync(userId);
+        if (user == null) return false;
 
-		var isAvailable = await _calendarService.IsSlotAvailableAsync(meetingDto.StartTime, meetingDto.EndTime, userId);
-		if (!isAvailable) return false;
+        bool isAvailable = await strategy.IsSlotAvailableAsync(dto.StartTime, dto.EndTime, userId);
+        if (!isAvailable) return false;
 
-		var meeting = new Meeting
+        var meeting = new Meeting
 		{
-			Title = meetingDto.Title,
-			Description = meetingDto.Description,
-			StartTime = meetingDto.StartTime,
-			EndTime = meetingDto.EndTime,
-			OrganizerId = userId
+			Title = dto.Title,
+			Description = dto.Description,
+			StartTime = dto.StartTime,
+			EndTime = dto.EndTime,
+			OrganizerId = userId,
+			Status = MeetingStatus.Scheduled
 		};
 
-		await _meetingService.AddAsync(meeting);
-		await _meetingService.SaveChangesAsync();
-		
-		return true;
-	}
+        await _meetingService.AddAsync(meeting);
+        await _meetingService.SaveChangesAsync();
+
+        return true;
+    }
 }

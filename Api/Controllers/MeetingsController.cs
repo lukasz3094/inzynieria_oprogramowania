@@ -8,12 +8,12 @@ namespace Api.Controllers;
 
 [ApiController]
 [Route("api/meetings")]
-public class MeetingsController(IMeetingRepository meetingRepository, IUserRepository userRepository, ICalendarRepository calendarRepository) : ControllerBase
+public class MeetingsController(IMeetingRepository meetingRepository, IUserRepository userRepository, ISchedulingStrategyFactory schedulingStrategyFactory) : ControllerBase
 {
     private readonly IMeetingRepository _meetingRepository = meetingRepository;
     private readonly IUserRepository _userRepository = userRepository;
-	private readonly ICalendarRepository _calendarRepository = calendarRepository;
-	private readonly IMeetingFacade _meetingFacade = new MeetingFacade(userRepository, calendarRepository, meetingRepository);
+	private readonly ISchedulingStrategyFactory _strategyFactory = schedulingStrategyFactory;
+	private readonly IMeetingFacade _meetingFacade = new MeetingFacade(userRepository, schedulingStrategyFactory, meetingRepository);
 
 	[HttpGet]
     public async Task<IActionResult> GetAll()
