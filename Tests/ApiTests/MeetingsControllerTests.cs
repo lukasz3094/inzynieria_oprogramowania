@@ -34,7 +34,7 @@ public class MeetingsControllerTests(CustomWebApplicationFactory factory) : ICla
 		if (!meetingResponse.IsSuccessStatusCode)
 		{
 			var error = await meetingResponse.Content.ReadAsStringAsync();
-			Console.WriteLine($"❌ Error creating meeting: {error}");
+			Console.WriteLine($"Error creating meeting: {error}");
 		}
 		meetingResponse.EnsureSuccessStatusCode();
 		var createdMeeting = await meetingResponse.Content.ReadFromJsonAsync<Meeting>();

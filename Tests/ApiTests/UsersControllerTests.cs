@@ -26,7 +26,7 @@ public class UsersControllerTests(CustomWebApplicationFactory factory) : IClassF
         createResponse.EnsureSuccessStatusCode();
 
         var createdUser = await createResponse.Content.ReadFromJsonAsync<User>();
-		Console.WriteLine($"✅ Created User ID: {createdUser!.Id}");
+		Console.WriteLine($"Created User ID: {createdUser!.Id}");
 
 		var getResponse = await _client.GetAsync($"/api/users/{createdUser!.Id}");
         getResponse.EnsureSuccessStatusCode();
